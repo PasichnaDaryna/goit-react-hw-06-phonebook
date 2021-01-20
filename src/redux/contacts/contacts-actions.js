@@ -9,7 +9,11 @@ const addContact = ({ name, number }) => ({
         name,
         number
     },
-});
+}
+
+
+
+);
 
 
 const deleteContact = contactId => ({

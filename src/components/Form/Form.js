@@ -1,71 +1,92 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import T from 'prop-types';
-import shortid from 'shortid';
+// import shortid from 'shortid';
 import { connect } from "react-redux"
 
 import contactActions from "../../redux/contacts/contacts-actions"
+
 import '../Form/Form.css';
 
-class Form extends Component {
-  state = {
-    name: '',
-    number: '',
+
+
+function Form({ onSubmit }) {
+  // state = {
+  //   name: '',
+  //   number: '',
+  // };
+
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+  const dispatch = useDispatch()
+
+  // nameInputId = shortid.generate();
+  // numberInputId = shortid.generate();
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
+
+      case 'number':
+        setNumber(value);
+        break;
+
+      default:
+        return;
+    }
   };
 
-  nameInputId = shortid.generate();
-  numberInputId = shortid.generate();
-
-  handleChange = e => {
-    const { name, value } = e.currentTarget;
-
-    this.setState({ [name]: value });
-  };
-
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
-
-    this.props.onSubmit(this.state);
-
-    this.setState({ name: '', number: '' });
+    dispatch(contactActions.addContact({ name, number }))
+    // onSubmit(name, number);
+    resetInput();
   };
 
-  render() {
-    const { name, number } = this.state;
-    return (
-      <form id="contact" onSubmit={this.handleSubmit}>
-        <label htmlFor={this.nameInputId}>
-          Name
-          <input
-            className="input-field"
-            type="text"
-            name="name"
-            value={name}
-            onChange={this.handleChange}
-            id={this.nameInputId}
-            placeholder="John Dows"
-          />
-        </label>
-        <br />
-        <label htmlFor={this.numberInputId}>
-          Phone number
-          <input
-            className="input-field"
-            type="text"
-            name="number"
-            value={number}
-            onChange={this.handleChange}
-            id={this.numberInputId}
-            placeholder="459-12-56"
-          />
-        </label>
+  const resetInput = () => {
+    setName('');
+    setNumber('');
+  };
 
-        <button type="submit" className="submit-button">
-          Add contact
-        </button>
-      </form>
-    );
-  }
+
+
+  return (
+    <form id="contact" onSubmit={handleSubmit}>
+      <label>
+        Name
+        <input
+          className="input-field"
+          type="text"
+          name="name"
+          value={name}
+          onChange={handleChange}
+          placeholder="John Dows"
+        />
+      </label>
+      <br />
+      <label>
+        Phone number
+        <input
+          className="input-field"
+          type="tel"
+          name="number"
+          value={number}
+          onChange={handleChange}
+          placeholder="459-12-56"
+        />
+      </label>
+
+      <button type="submit" className="submit-button">
+        Add contact
+      </button>
+    </form>
+  );
 }
+
 Form.propTypes = {
   onSubmit: T.func.isRequired,
 };

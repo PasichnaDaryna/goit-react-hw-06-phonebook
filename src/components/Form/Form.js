@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { addContact } from '../../redux/contacts/contacts-actions';
-import { getAllContacts } from '../../redux/contacts/contacts-selectors';
+import { getContacts } from '../../redux/contacts/contacts-selectors';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import '../Form/Form.css';
 
 function Form() {
+  const dispatch = useDispatch();
+  const contacts = useSelector(getContacts);
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
-  const contacts = useSelector(getAllContacts);
-  const dispatch = useDispatch();
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -33,7 +33,10 @@ function Form() {
 
   const checkRepeatName = name => {
     return contacts.find(
-      contact => contact.name.toLowerCase() === name.toLowerCase(),
+      contact =>
+        contact &&
+        contact.toLowerCase &&
+        contact.name.toLowerCase() === name.toLowerCase(),
     );
   };
 
@@ -60,7 +63,7 @@ function Form() {
     } else if (checkValidNumber(number)) {
       toast.error('# Enter the correct phone number!');
     } else {
-      dispatch(addContact({ name, number }));
+      dispatch(addContact(name, number));
     }
     resetInput();
   };

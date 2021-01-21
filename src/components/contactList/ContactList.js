@@ -1,15 +1,12 @@
-
 import '../contactList/ContactList.css';
-import { getAllContacts } from '../../redux/contacts/contacts-selectors'
+import { getAllContacts } from '../../redux/contacts/contacts-selectors';
 
-import contactActions from "../../redux/contacts/contacts-actions"
+import contactActions from '../../redux/contacts/contacts-actions';
 import { useSelector, useDispatch } from 'react-redux';
 
 const ContactList = () => {
-
-  const contacts = useSelector(getAllContacts)
+  const contacts = useSelector(getAllContacts);
   const dispatch = useDispatch();
-
 
   const onDeleteContact = id => dispatch(contactActions.deleteContact(id));
 
@@ -27,10 +24,6 @@ const ContactList = () => {
       ))}
     </ul>
   );
-}
-
-
-
-
+};
 
 export default ContactList;

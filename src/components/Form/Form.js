@@ -1,27 +1,18 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import T from 'prop-types';
-// import shortid from 'shortid';
-import { connect } from "react-redux"
+import { useSelector, useDispatch } from 'react-redux';
 
-import contactActions from "../../redux/contacts/contacts-actions"
+import { addContact } from '../../redux/contacts/contacts-actions';
+import { getAllContacts } from '../../redux/contacts/contacts-selectors';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import '../Form/Form.css';
 
-
-
-function Form({ onSubmit }) {
-  // state = {
-  //   name: '',
-  //   number: '',
-  // };
-
+function Form() {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
-  const dispatch = useDispatch()
-
-  // nameInputId = shortid.generate();
-  // numberInputId = shortid.generate();
+  const contacts = useSelector(getAllContacts);
+  const dispatch = useDispatch();
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -40,10 +31,37 @@ function Form({ onSubmit }) {
     }
   };
 
+  const checkRepeatName = name => {
+    return contacts.find(
+      contact => contact.name.toLowerCase() === name.toLowerCase(),
+    );
+  };
+
+  const checkRepeatNumber = number => {
+    return contacts.find(contact => contact.number === number);
+  };
+
+  const checkEmptyQuery = (name, number) => {
+    return name.trim() === '' || number.trim() === '';
+  };
+
+  const checkValidNumber = number => {
+    return !/\d{3}[-]\d{2}[-]\d{2}/g.test(number);
+  };
+
   const handleSubmit = e => {
     e.preventDefault();
-    dispatch(contactActions.addContact({ name, number }))
-    // onSubmit(name, number);
+    if (checkRepeatName(name)) {
+      toast(`'${name}' is already in use!`);
+    } else if (checkRepeatNumber(number)) {
+      toast(`🤔 ${number} is already in use`);
+    } else if (checkEmptyQuery(name, number)) {
+      toast.info(' Enter the correct name and number!');
+    } else if (checkValidNumber(number)) {
+      toast.error('# Enter the correct phone number!');
+    } else {
+      dispatch(addContact({ name, number }));
+    }
     resetInput();
   };
 
@@ -51,8 +69,6 @@ function Form({ onSubmit }) {
     setName('');
     setNumber('');
   };
-
-
 
   return (
     <form id="contact" onSubmit={handleSubmit}>
@@ -87,13 +103,4 @@ function Form({ onSubmit }) {
   );
 }
 
-Form.propTypes = {
-  onSubmit: T.func.isRequired,
-};
-
-
-const mapDispatchToProps = dispatch => ({
-  onSubmit: ({ id, name, number }) => dispatch(contactActions.addContact({ id, name, number })),
-});
-
-export default connect(null, mapDispatchToProps)(Form);
+export default Form;

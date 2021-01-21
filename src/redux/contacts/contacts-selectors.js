@@ -1,14 +1,12 @@
-export const getContacts = state => state.contacts.contacts
-export const getFilter = state => state.contacts.filter
-
+export const getContacts = state => state.contacts.contacts;
+export const getFilter = state => state.contacts.filter;
 
 export const getAllContacts = state => {
-    const contacts = getContacts(state)
-    const filter = getFilter(state)
-    const normalizedFilter = filter.toLowerCase();
+  const contacts = getContacts(state);
+  const filter = getFilter(state);
+  const normalizedFilter = filter.toLowerCase();
 
-    return contacts.filter(({ name }) =>
-        name.toLowerCase().includes(normalizedFilter),
-    );
+  return contacts.filter(({ name }) =>
+    name.toLowerCase().includes(normalizedFilter),
+  );
 };
-

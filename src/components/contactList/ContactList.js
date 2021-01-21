@@ -1,24 +1,13 @@
 
 import '../contactList/ContactList.css';
+import { getAllContacts } from '../../redux/contacts/contacts-selectors'
 
 import contactActions from "../../redux/contacts/contacts-actions"
 import { useSelector, useDispatch } from 'react-redux';
 
-
-
-const getContacts = (contacts, filter) => {
-
-  const normalizedFilter = filter.toLowerCase();
-
-  return contacts.filter(({ name }) =>
-    name.toLowerCase().includes(normalizedFilter),
-  );
-};
-
-
 const ContactList = () => {
-  const contacts = useSelector(state =>
-    getContacts(state.contacts.contacts, state.contacts.filter));
+
+  const contacts = useSelector(getAllContacts)
   const dispatch = useDispatch();
 
 
